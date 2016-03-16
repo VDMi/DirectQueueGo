@@ -12,4 +12,4 @@ before_install:
   - go get github.com/tcnksm/ghr
 after_success:
   - gox -output "dist/{{.OS}}_{{.Arch}}_{{.Dir}}"
-  - ghr --username VDMi --repository DirectQueueGo --token $GITHUB_TOKEN -c $TRAVIS_COMMIT --replace --prerelease --debug "build-$TRAVIS_BUILD_NUMBER" dist/
+  - test "$TRAVIS_TAG" != "" && ghr --username VDMi --repository DirectQueueGo --token $GITHUB_TOKEN -c $TRAVIS_COMMIT --replace --prerelease --debug "$TRAVIS_TAG" dist/
