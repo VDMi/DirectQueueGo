@@ -176,14 +176,14 @@ func main() {
 		}
 
 		// Start the infinte scan for new queue items.
-		scanNewItems(db, config)
+		scanNewItems(db, config, false)
 	}
 
 	app.Run(os.Args)
 }
 
 // Function to scan for queue items infinitely.
-func scanNewItems(db *sql.DB, config Config) {
+func scanNewItems(db *sql.DB, config Config, testmode bool) {
 	log.Println("Scanning queue for new items...")
 
 	queues := map[string]*Queue{}
@@ -234,6 +234,10 @@ func scanNewItems(db *sql.DB, config Config) {
 		// Close the row handler and wait 500 ms before querying again.
 		rows.Close()
 		time.Sleep(time.Millisecond * 500)
+
+		if testmode {
+			break
+		}
 	}
 }
 
@@ -351,7 +355,7 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	output := string(bytes)
 
 	// Try to parse database details from Drupal Console output.
-	re := regexp.MustCompile("--database=(.*) --user=(.*) --password=(.*) --host=(.*) --port=(.*?)")
+	re := regexp.MustCompile("--database=(.*) --user=(.*) --password=(.*) --host=(.*) --port=(.*)")
 	matches := re.FindStringSubmatch(output)
 
 	// See if we have enough matches.
