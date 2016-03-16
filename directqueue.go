@@ -378,8 +378,6 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	// matches[5] = --port (or default)
 	db_connect = strings.Trim(matches[2], cutset) + ":" + strings.Trim(matches[3], cutset) + "@tcp(" + strings.Trim(matches[4], cutset) + ":" + strings.Trim(matches[5], cutset) + ")/" + strings.Trim(matches[1], cutset)
 
-	log.Println(db_connect)
-
 	return db_connect, nil
 }
 
