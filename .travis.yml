@@ -1,8 +1,15 @@
 language: go
 
 go:
-  - 1.4
-  - 1.5
   - 1.6
 
-
+env:
+  - "PATH=/home/travis/gopath/bin:$PATH"
+before_install:
+  - go get github.com/tools/godep
+  - godep restore
+  - go get github.com/mitchellh/gox
+  - go get github.com/tcnksm/ghr
+after_success:
+  - gox -output "dist/{{.OS}}_{{.Arch}}_{{.Dir}}"
+  - ghr --username VDMi --repository DirectQueueGo --token $GITHUB_TOKEN -c $TRAVIS_COMMIT --replace --prerelease --debug "build-$TRAVIS_BUILD_NUMBER" dist/
