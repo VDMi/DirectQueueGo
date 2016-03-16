@@ -355,8 +355,9 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	output := string(bytes)
 
 	// Try to parse database details from Drupal Console output.
-	re := regexp.MustCompile("--database=(.*) --user=(.*) --password=(.*) --host=(.*) --port=(.*)")
+	re := regexp.MustCompile("(?ms)--database=(.*)--user=(.*)--password=(.*)--host=(.*)--port=(0|[1-9][0-9]*|)")
 	matches := re.FindStringSubmatch(output)
+	cutset := " \n\r"
 
 	// See if we have enough matches.
 	if len(matches) < 6 {
@@ -365,7 +366,7 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	}
 
 	// Add default port of MySQL.
-	if strings.TrimSpace(matches[5]) == "" {
+	if strings.Trim(matches[5], cutset) == "" {
 		matches[5] = "3306"
 	}
 
@@ -375,7 +376,9 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	// matches[3] = --password
 	// matches[4] = --host
 	// matches[5] = --port (or default)
-	db_connect = matches[2] + ":" + matches[3] + "@tcp(" + matches[4] + ":" + matches[5] + ")/" + matches[1]
+	db_connect = strings.Trim(matches[2], cutset) + ":" + strings.Trim(matches[3], cutset) + "@tcp(" + strings.Trim(matches[4], cutset) + ":" + strings.Trim(matches[5], cutset) + ")/" + strings.Trim(matches[1], cutset)
+
+	log.Println(db_connect)
 
 	return db_connect, nil
 }

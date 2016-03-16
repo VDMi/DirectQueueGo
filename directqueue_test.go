@@ -139,6 +139,17 @@ func TestDBConnectionInfoParser(t *testing.T) {
 	if connectString != "user:password@tcp(testhost:2610)/test" {
 		t.Errorf("Database string with port was not in expected format")
 	}
+
+	// Test DB multiline info with port.
+	config.Console = "./test_scripts/db_info_multiline.sh"
+	connectString, err = getDBConnectString(config)
+	if err != nil {
+		t.Errorf("Could not parse DB details with newlines: %s", err)
+	}
+
+	if connectString != "user:password@tcp(testhost:3306)/test_with_multiline_return" {
+		t.Errorf("Database string with newlines was not in expected format")
+	}
 }
 
 func TestWorkers(t *testing.T) {
