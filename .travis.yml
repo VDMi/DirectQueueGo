@@ -11,5 +11,5 @@ before_install:
   - go get github.com/mitchellh/gox
   - go get github.com/tcnksm/ghr
 after_success:
-  - test "$TRAVIS_TAG" != "" gox -output "dist/{{.OS}}_{{.Arch}}_{{.Dir}}"
+  - test "$TRAVIS_TAG" != "" && gox -output "dist/{{.OS}}_{{.Arch}}_{{.Dir}}"
   - test "$TRAVIS_TAG" != "" && ghr --username VDMi --repository DirectQueueGo --token $GITHUB_TOKEN -c $TRAVIS_COMMIT --replace --debug "$TRAVIS_TAG" dist/
