@@ -365,7 +365,7 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	}
 
 	// Add default port of MySQL.
-	if matches[5] == "" {
+	if strings.TrimSpace(matches[5]) == "" {
 		matches[5] = "3306"
 	}
 
