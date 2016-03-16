@@ -95,8 +95,8 @@ func main() {
 		},
 	}
 
-	app.Name = "DirectCronQueueWorker"
-	app.Usage = "Directly handles Cron Queue items by using a Go daemon."
+	app.Name = "DirectQueue"
+	app.Usage = "Directly handles Queue items by using a Go daemon."
 
 	app.Action = func(c *cli.Context) {
 		config := Config{
@@ -325,7 +325,7 @@ func queueJobHandler(queue Queue, config Config, worker int) {
 
 			// Execute the Drupal Console command.
 			log.Printf("Started on queue %s, item %d, worker %d", queue.Name, job.ItemID, worker)
-			_, err := executeCommand(config, []string{"direct_cron_queue_worker:run", strconv.FormatUint(job.ItemID, 10), strconv.FormatUint(job.Expire, 10)})
+			_, err := executeCommand(config, []string{"direct_queue:run", strconv.FormatUint(job.ItemID, 10), strconv.FormatUint(job.Expire, 10)})
 			if err != nil {
 				log.Printf("Error on queue %s, item %d, worker %d", queue.Name, job.ItemID, worker)
 				log.Fatal(err)
