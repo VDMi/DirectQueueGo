@@ -37,8 +37,13 @@ type Config struct {
 	Context            *cli.Context
 }
 
+// Default version. Travis will overwrite this.
+var Version = "build-from-source"
+
 func main() {
 	app := cli.NewApp()
+
+	app.Version = Version
 
 	var (
 		console            string
