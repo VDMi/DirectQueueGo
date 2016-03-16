@@ -1,5 +1,5 @@
 {
-	"ImportPath": "directcronqueueworker",
+	"ImportPath": "directqueue",
 	"GoVersion": "go1.6",
 	"Deps": [
 		{
@@ -11,6 +11,11 @@
 			"ImportPath": "github.com/go-sql-driver/mysql",
 			"Comment": "v1.2-188-g66312f7",
 			"Rev": "66312f7fe2678aa0f5ec770f96702f4c4ec5aa8e"
+		},
+		{
+			"ImportPath": "gopkg.in/DATA-DOG/go-sqlmock.v1",
+			"Comment": "v1.1.3",
+			"Rev": "9958e5c69de03e97ec215b23f6fcae1f600c3fb6"
 		}
 	]
 }
