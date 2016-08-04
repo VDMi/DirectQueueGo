@@ -100,7 +100,7 @@ func main() {
 			Usage:       "Default amount of workers, default value is amount of CPUs - 1.",
 			Destination: &defaultWorkerCount,
 		},
-		cli.IntFlag{
+		cli.StringFlag{
 			Name:        "db-password",
 			Value:       "",
 			Usage:       "Overwrite the db password.",
