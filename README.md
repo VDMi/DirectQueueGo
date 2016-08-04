@@ -28,6 +28,7 @@ You can also wrap it in a upstart/init.d script, examples on that will come soon
 | --handle-queues        | ""               | Comma separated list of queues to handle, can't be used together with skip-queues. |
 | --queue-workers        | ""               | Amount of workers to use per queue, format: "publish_scheduler:1,entity_update:4". |
 | --default-worker-count | Amount of CPUs-1 | Default amount of workers, default value is amount of CPUs - 1. |
+| --db-password          | DB Password      | Password for the database if it can't be read by Drupal Console. |
 
 ## Compiling
 Make sure you are able to run a Go 1.6 (though 1.4/1.5 should also work) environment and that you have [Godeps](https://github.com/tools/godep) available.

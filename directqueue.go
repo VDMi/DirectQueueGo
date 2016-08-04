@@ -30,6 +30,7 @@ type Config struct {
 	Console            string
 	Site               string
 	URI                string
+	Password           string
 	HandleQueues       []string
 	SkipQueues         []string
 	QueueWorkers       map[string]int
@@ -53,6 +54,7 @@ func main() {
 		handleQueues       string
 		queueWorkers       string
 		defaultWorkerCount int
+		password           string
 	)
 
 	app.Flags = []cli.Flag{
@@ -98,6 +100,12 @@ func main() {
 			Usage:       "Default amount of workers, default value is amount of CPUs - 1.",
 			Destination: &defaultWorkerCount,
 		},
+		cli.IntFlag{
+			Name:        "db-password",
+			Value:       "",
+			Usage:       "Overwrite the db password.",
+			Destination: &password,
+		},
 	}
 
 	app.Name = "DirectQueue"
@@ -108,6 +116,7 @@ func main() {
 			Console:            console,
 			Site:               site,
 			URI:                uri,
+			Password:           password,
 			DefaultWorkerCount: defaultWorkerCount,
 			Context:            c,
 		}
@@ -373,6 +382,10 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	// Add default port of MySQL.
 	if strings.Trim(matches[5], cutset) == "" {
 		matches[5] = "3306"
+	}
+
+	if config.Password != "" {
+		matches[3] = config.Password
 	}
 
 	// Put together the connection details.
