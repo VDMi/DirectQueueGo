@@ -414,5 +414,9 @@ func executeCommand(config Config, args []string) ([]byte, error) {
 	}
 
 	cmd := exec.Command(config.Console, args...)
+        // Make sure our site dir is the current working directory.
+        if config.Site != "" {
+                cmd.Dir = config.Site
+        }
 	return cmd.Output()
 }
