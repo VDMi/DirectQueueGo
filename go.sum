@@ -1,0 +1,6 @@
+github.com/codegangsta/cli v1.13.1-0.20160307041229-aca5b047ed14 h1:oO2Sra3Njr2LAo17zT68PdIxb2dQE41I6+5MhWgsQJE=
+github.com/codegangsta/cli v1.13.1-0.20160307041229-aca5b047ed14/go.mod h1:/qJNoX69yVSKu5o4jLyXAENLRyk1uhi7zkbQ3slBdOA=
+github.com/go-sql-driver/mysql v1.2.1-0.20160310222842-66312f7fe267 h1:W7mv/YO8jTTEXpNS0wf+SLbzZRmyXlyZD9OArEm0HUk=
+github.com/go-sql-driver/mysql v1.2.1-0.20160310222842-66312f7fe267/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
+gopkg.in/DATA-DOG/go-sqlmock.v1 v1.1.3 h1:9g2wYVtfupXhTOPXHLHzLrT8NdFOte5QsG7mV3rMM2k=
+gopkg.in/DATA-DOG/go-sqlmock.v1 v1.1.3/go.mod h1:OdE7CF6DbADk7lN8LIKRzRJTTZXIjtWgA5THM5lhBAw=
