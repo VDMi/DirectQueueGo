@@ -1,6 +1,6 @@
 module directqueue
 
-go 1.21.4
+go 1.19
 
 require (
 	github.com/codegangsta/cli v1.13.1-0.20160307041229-aca5b047ed14

@@ -407,12 +407,13 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	}
 
 	// Put together the connection details.
-	// matches[1] = --database
-	// matches[2] = --user
-	// matches[3] = --password
+	// matches[1] = --user
+	// matches[2] = --password
+	// matches[3] = --database
 	// matches[4] = --host
 	// matches[5] = --port (or default)
-	db_connect = strings.Trim(matches[4], cutset) + ":" + strings.Trim(matches[2], cutset) + "@tcp(" + strings.Trim(matches[3], cutset) + ":" + strings.Trim(matches[5], cutset) + ")/" + strings.Trim(matches[1], cutset)
+
+	db_connect = strings.Trim(matches[1], cutset) + ":" + strings.Trim(matches[2], cutset) + "@tcp(" + strings.Trim(matches[4], cutset) + ":" + strings.Trim(matches[5], cutset) + ")/" + strings.Trim(matches[3], cutset)
 
 	return db_connect, nil
 }
