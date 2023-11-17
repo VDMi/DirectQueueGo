@@ -360,7 +360,7 @@ func queueJobHandler(queue Queue, config Config, worker int) {
 
 			// Execute the Drupal Console command.
 			log.Printf("Started on queue %s, item %d, worker %d", queue.Name, job.ItemID, worker)
-			_, err := executeCommand(config, []string{"direct_queue:run", strconv.FormatUint(job.ItemID, 10), strconv.FormatUint(job.Expire, 10)})
+			_, err := executeCommand(config, []string{"queue:run", strconv.FormatUint(job.ItemID, 10), strconv.FormatUint(job.Expire, 10)})
 			if err != nil {
 				log.Printf("Error on queue %s, item %d, worker %d", queue.Name, job.ItemID, worker)
 				log.Fatal(err)
