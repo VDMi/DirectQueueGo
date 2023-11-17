@@ -31,11 +31,11 @@ You can also wrap it in a upstart/init.d script, examples on that will come soon
 | --db-password          | DB Password      | Password for the database if it can't be read by Drupal Console. |
 
 ## Compiling
-Make sure you are able to run a Go 1.6 (though 1.4/1.5 should also work) environment and that you have [Godeps](https://github.com/tools/godep) available.
+Make sure you are able to run a Go 1.6 (though 1.4/1.5 should also work) environment.
 ```
 git clone https://github.com/VDMi/DirectQueueGo.git
 cd DirectQueueGo
-godep restore
+go install
 go build
 ./DirectQueueGo help
 ```
