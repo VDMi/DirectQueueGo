@@ -31,6 +31,7 @@ type Config struct {
 	Site               string
 	URI                string
 	Password           string
+	Port               string
 	HandleQueues       []string
 	SkipQueues         []string
 	QueueWorkers       map[string]int
@@ -48,6 +49,7 @@ func main() {
 
 	var (
 		console            string
+		drush              string
 		site               string
 		uri                string
 		skipQueues         string
@@ -55,14 +57,21 @@ func main() {
 		queueWorkers       string
 		defaultWorkerCount int
 		password           string
+		port               string
 	)
 
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "console",
-			Value:       "console",
-			Usage:       "Binary of Drupal Console. Full path or just binary to search in $PATH.",
+			Value:       "drush",
+			Usage:       "Binary of Drush. Full path or just binary to search in $PATH. (either use console or drush, console only exists for backwards compatibility)",
 			Destination: &console,
+		},
+		cli.StringFlag{
+			Name:        "drush",
+			Value:       "drush",
+			Usage:       "Binary of Drush. Full path or just binary to search in $PATH.",
+			Destination: &drush,
 		},
 		cli.StringFlag{
 			Name:        "site",
@@ -106,21 +115,29 @@ func main() {
 			Usage:       "Overwrite the db password.",
 			Destination: &password,
 		},
+		cli.StringFlag{
+			Name:        "db-port",
+			Value:       "3306",
+			Usage:       "Set the database port.",
+			Destination: &port,
+		},
 	}
-
 	app.Name = "DirectQueue"
 	app.Usage = "Directly handles Queue items by using a Go daemon."
 
 	app.Action = func(c *cli.Context) {
+		if drush != "" {
+			console = drush
+		}
 		config := Config{
 			Console:            console,
 			Site:               site,
 			URI:                uri,
 			Password:           password,
+			Port:               port,
 			DefaultWorkerCount: defaultWorkerCount,
 			Context:            c,
 		}
-
 		// Make sure we have the required variables.
 		if site == "" {
 			log.Fatal("Site path can't be empty.")
@@ -361,31 +378,32 @@ func queueJobHandler(queue Queue, config Config, worker int) {
 func getDBConnectString(config Config) (db_connect string, err error) {
 
 	// Execute the database:connect command in Drupal Console.
-	bytes, err := executeCommand(config, []string{"database:connect"})
+	bytes, err := executeCommand(config, []string{"sql-connect"})
 	if err != nil {
 		return "", err
 	}
 
-	output := string(bytes)
+	// Get output and replace -A with nothing
+	output := strings.Replace(string(bytes), "-A", "", 1)
 
 	// Try to parse database details from Drupal Console output.
-	re := regexp.MustCompile("(?ms)--database=(.*)--user=(.*)--password=(.*)--host=(.*)--port=(0|[1-9][0-9]*|)")
+	log.Printf("T" + output)
+	re := regexp.MustCompile("(?ms)--user=(.*)--password=(.*)--database=(.*)--host=(.*)(?:--port=(0|[1-9][0-9]*|))?")
 	matches := re.FindStringSubmatch(output)
 	cutset := " \n\r"
-
 	// See if we have enough matches.
-	if len(matches) < 6 {
+	if len(matches) < 5 {
 		err = errors.New("Could not find connection details.")
 		return "", err
 	}
 
 	// Add default port of MySQL.
 	if strings.Trim(matches[5], cutset) == "" {
-		matches[5] = "3306"
+		matches[5] = config.Port
 	}
 
 	if config.Password != "" {
-		matches[3] = config.Password
+		matches[2] = config.Password
 	}
 
 	// Put together the connection details.
@@ -394,14 +412,13 @@ func getDBConnectString(config Config) (db_connect string, err error) {
 	// matches[3] = --password
 	// matches[4] = --host
 	// matches[5] = --port (or default)
-	db_connect = strings.Trim(matches[2], cutset) + ":" + strings.Trim(matches[3], cutset) + "@tcp(" + strings.Trim(matches[4], cutset) + ":" + strings.Trim(matches[5], cutset) + ")/" + strings.Trim(matches[1], cutset)
+	db_connect = strings.Trim(matches[4], cutset) + ":" + strings.Trim(matches[2], cutset) + "@tcp(" + strings.Trim(matches[3], cutset) + ":" + strings.Trim(matches[5], cutset) + ")/" + strings.Trim(matches[1], cutset)
 
 	return db_connect, nil
 }
 
 // Function to execute Drupal Console commands.
 func executeCommand(config Config, args []string) ([]byte, error) {
-
 	// We do not want colors.
 	args = append(args, "--no-ansi")
 
@@ -414,9 +431,9 @@ func executeCommand(config Config, args []string) ([]byte, error) {
 	}
 
 	cmd := exec.Command(config.Console, args...)
-        // Make sure our site dir is the current working directory.
-        if config.Site != "" {
-                cmd.Dir = config.Site
-        }
+	// Make sure our site dir is the current working directory.
+	if config.Site != "" {
+		cmd.Dir = config.Site
+	}
 	return cmd.Output()
 }
